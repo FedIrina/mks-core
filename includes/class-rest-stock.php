@@ -94,6 +94,14 @@ class MKS_Core_REST_Stock {
 	 * @return true|WP_Error
 	 */
 	public static function permissions_check() {
+		if ( isset( $_GET['consumer_key'] ) || isset( $_GET['consumer_secret'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			return new WP_Error(
+				'mks_core_query_auth_forbidden',
+				__( 'API keys in query parameters are not allowed. Use HTTP Basic Authentication.', 'mks-core' ),
+				array( 'status' => 401 )
+			);
+		}
+
 		if ( current_user_can( MKS_Core_Roles::CAPABILITY ) ) {
 			return true;
 		}

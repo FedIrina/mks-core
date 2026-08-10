@@ -54,15 +54,24 @@ GET /wp-json/mks-core/v1/stock
 
 1. В WordPress создайте пользователя с ролью **МКС API Partner** (`mks_api_partner`) **или** используйте администратора (у обеих ролей есть capability `read_mks_api`).
 2. WooCommerce → Настройки → Дополнительно → REST API → добавить ключ для этого пользователя, права **Read**.
-3. Передавайте `consumer_key` и `consumer_secret` **только как query-параметры** URL.
+3. Передавайте ключи **только через HTTP Basic Authentication** в заголовке `Authorization`:
+   - username = `consumer_key`
+   - password = `consumer_secret`
 
 Пример:
 
 ```
-GET /wp-json/mks-core/v1/stock?page=1&per_page=100&consumer_key=ck_xxx&consumer_secret=cs_yyy
+Authorization: Basic BASE64(consumer_key:consumer_secret)
+GET /wp-json/mks-core/v1/stock?page=1&per_page=100
 ```
 
-Рекомендуется **HTTPS**, чтобы ключи не передавались открытым текстом.
+```bash
+curl -u "ck_xxx:cs_yyy" "https://example.com/wp-json/mks-core/v1/stock?page=1&per_page=100"
+```
+
+Передача `consumer_key` / `consumer_secret` в query-параметрах **запрещена** (ответ `401`).
+
+**HTTPS обязателен**: WooCommerce принимает Basic Auth только по SSL.
 
 Без capability `read_mks_api` endpoint вернёт `401`/`403`.
 

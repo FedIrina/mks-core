@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       MKS Core
  * Description:       Общий функционал интернет-магазина (REST API остатков и др.).
- * Version:           0.1.0
+ * Version:           0.2.0
  * Requires at least: 5.9
  * Requires PHP:      7.4
  * Requires Plugins:  woocommerce
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MKS_CORE_VERSION', '0.1.0' );
+define( 'MKS_CORE_VERSION', '0.2.0' );
 define( 'MKS_CORE_FILE', __FILE__ );
 define( 'MKS_CORE_DIR', dirname( __FILE__ ) );
 
