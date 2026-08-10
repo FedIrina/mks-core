@@ -2,7 +2,7 @@
 
 Только чтение. Запись (POST/PUT/PATCH/DELETE) не поддерживается.
 
-Параметры endpoint’а, пагинации и фильтра по атрибуту задаются в **Настройки → MKS Core**.
+Параметры endpoint’а, пагинации, фильтра по атрибуту и порога остатка задаются в **Настройки → MKS Core**.
 
 ## Endpoint
 
@@ -28,13 +28,12 @@ GET /wp-json/mks-core/v1/stock
 
 ### Элемент списка
 
-| Поле                 | Тип            | Описание |
-|----------------------|----------------|----------|
-| `name`               | string         | Наименование |
-| `sku`                | string         | Артикул |
-| `manage_stock`       | boolean        | Ведение остатков |
-| `stock_quantity`     | number \| null | Остаток (`null`, если остатки не ведутся) |
-| `backorders_allowed` | boolean        | Разрешён ли предзаказ (стандарт WC) |
+| Поле             | Тип     | Описание |
+|------------------|---------|----------|
+| `name`           | string  | Наименование |
+| `sku`            | string  | Артикул |
+| `isbn`           | string  | Значение атрибута ISBN (пусто, если не задано) |
+| `stock_quantity` | string  | Текстовый остаток: `более N`, где N — порог из настроек (по умолчанию `более 50`). Реальное количество не отдаётся. |
 
 ### Пример ответа
 
@@ -43,9 +42,8 @@ GET /wp-json/mks-core/v1/stock
   {
     "name": "Пример книги",
     "sku": "12345",
-    "manage_stock": true,
-    "stock_quantity": 12,
-    "backorders_allowed": false
+    "isbn": "978-5-9704-8204-9",
+    "stock_quantity": "более 50"
   }
 ]
 ```
@@ -56,9 +54,15 @@ GET /wp-json/mks-core/v1/stock
 
 1. В WordPress создайте пользователя с ролью **МКС API Partner** (`mks_api_partner`) **или** используйте администратора (у обеих ролей есть capability `read_mks_api`).
 2. WooCommerce → Настройки → Дополнительно → REST API → добавить ключ для этого пользователя, права **Read**.
-3. Передавайте `consumer_key` и `consumer_secret` через Basic Auth или query-параметры (как в документации WC REST API).
+3. Передавайте `consumer_key` и `consumer_secret` **только как query-параметры** URL.
 
-**HTTPS обязателен** для Basic Auth: WooCommerce принимает Basic Auth только по SSL. Без HTTPS используйте OAuth 1.0a (как в документации WC REST API).
+Пример:
+
+```
+GET /wp-json/mks-core/v1/stock?page=1&per_page=100&consumer_key=ck_xxx&consumer_secret=cs_yyy
+```
+
+Рекомендуется **HTTPS**, чтобы ключи не передавались открытым текстом.
 
 Без capability `read_mks_api` endpoint вернёт `401`/`403`.
 
@@ -70,4 +74,5 @@ GET /wp-json/mks-core/v1/stock
 
 - тип `simple`;
 - статус `publish`;
-- атрибут и значение термина, выбранные в **Настройки → MKS Core** (в БД хранятся таксономия и слаг термина).
+- атрибут и значение термина, выбранные в **Настройки → MKS Core** (в БД хранятся таксономия и слаг термина);
+- складской остаток в БД **строго больше** порога из настройки «Порог складского остатка» (по умолчанию 50).

@@ -122,6 +122,8 @@ class MKS_Core_REST_Stock {
 			);
 		}
 
+		$threshold = (int) $settings['stock_threshold'];
+
 		$query = new WP_Query(
 			array(
 				'post_type'              => 'product',
@@ -145,6 +147,14 @@ class MKS_Core_REST_Stock {
 						'terms'    => 'simple',
 					),
 				),
+				'meta_query'             => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+					array(
+						'key'     => '_stock',
+						'value'   => $threshold,
+						'compare' => '>',
+						'type'    => 'NUMERIC',
+					),
+				),
 			)
 		);
 
@@ -154,7 +164,7 @@ class MKS_Core_REST_Stock {
 			if ( ! $product ) {
 				continue;
 			}
-			$items[] = self::serialize_product( $product );
+			$items[] = self::serialize_product( $product, $threshold );
 		}
 
 		$response = rest_ensure_response( $items );
@@ -165,18 +175,16 @@ class MKS_Core_REST_Stock {
 	}
 
 	/**
-	 * @param WC_Product $product Product.
+	 * @param WC_Product $product   Product.
+	 * @param int        $threshold Stock threshold from settings.
 	 * @return array
 	 */
-	private static function serialize_product( $product ) {
-		$manage_stock = (bool) $product->get_manage_stock();
-
+	private static function serialize_product( $product, $threshold ) {
 		return array(
-			'name'               => $product->get_name(),
-			'sku'                => $product->get_sku(),
-			'manage_stock'       => $manage_stock,
-			'stock_quantity'     => $manage_stock ? $product->get_stock_quantity() : null,
-			'backorders_allowed' => $product->backorders_allowed(),
+			'name'           => $product->get_name(),
+			'sku'            => $product->get_sku(),
+			'isbn'           => $product->get_attribute( 'isbn' ),
+			'stock_quantity' => 'более ' . (int) $threshold,
 		);
 	}
 }

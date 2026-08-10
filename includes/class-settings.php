@@ -28,6 +28,7 @@ class MKS_Core_Settings {
 			'endpoint_path'      => 'mks-core/v1/stock',
 			'publisher_taxonomy' => '',
 			'publisher_term'     => '',
+			'stock_threshold'    => 50,
 		);
 	}
 
@@ -219,6 +220,14 @@ class MKS_Core_Settings {
 			self::PAGE,
 			'mks_core_rest_api'
 		);
+
+		add_settings_field(
+			'stock_threshold',
+			'Порог складского остатка',
+			array( __CLASS__, 'field_stock_threshold' ),
+			self::PAGE,
+			'mks_core_rest_api'
+		);
 	}
 
 	/**
@@ -288,6 +297,14 @@ class MKS_Core_Settings {
 			} else {
 				$output['publisher_term'] = '';
 			}
+		}
+
+		if ( isset( $input['stock_threshold'] ) ) {
+			$threshold = absint( $input['stock_threshold'] );
+			if ( $threshold < 1 ) {
+				$threshold = $defaults['stock_threshold'];
+			}
+			$output['stock_threshold'] = $threshold;
 		}
 
 		unset( $output['publisher_attribute'] );
@@ -378,6 +395,18 @@ class MKS_Core_Settings {
 		asort( $choices, SORT_NATURAL | SORT_FLAG_CASE );
 
 		return $choices;
+	}
+
+	/**
+	 * Field: stock quantity threshold for API selection.
+	 */
+	public static function field_stock_threshold() {
+		$settings = self::get();
+		printf(
+			'<input type="number" name="%1$s[stock_threshold]" value="%2$d" min="1" class="small-text" /> <span class="description">в выборку — остаток строго больше этого значения; в API вместо числа — «более %2$d»</span>',
+			esc_attr( self::OPTION ),
+			(int) $settings['stock_threshold']
+		);
 	}
 
 	/**
