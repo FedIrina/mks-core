@@ -32,15 +32,21 @@ stock_quantity приходит текст вида «более 50».
 Используются ключи WooCommerce REST API с правами Read.
 Ключи выдаёт сторона магазина.
 
-Передача ключей — ТОЛЬКО через query-параметры URL:
+Передача ключей — ТОЛЬКО через HTTP Basic Authentication в заголовке
+Authorization:
 
-  consumer_key     — ключ API
-  consumer_secret  — секретный ключ API
+  Username (логин)  — consumer_key
+  Password (пароль) — consumer_secret
 
-Другие способы авторизации (Basic Auth и т.п.) для этой интеграции
-не используйте.
+Заголовок формируется так:
 
-Рекомендуется HTTPS, чтобы ключи не передавались открытым текстом.
+  Authorization: Basic BASE64(consumer_key:consumer_secret)
+
+где BASE64 — кодирование строки «ключ:секрет» в Base64.
+
+Ключи в query-параметрах URL не передавайте.
+
+HTTPS обязателен: WooCommerce принимает Basic Auth только по SSL.
 
 Без корректных ключей ответ будет 401 или 403.
 
@@ -53,8 +59,6 @@ stock_quantity приходит текст вида «более 50».
   ----------   ------------   -------------------   ----------------------------
   page         нет            1                     Номер страницы (≥ 1)
   per_page     нет            из настроек магазина  Товаров на странице (1…100)
-  consumer_key да             —                     Ключ API
-  consumer_secret да          —                     Секретный ключ API
 
 Для полной выгрузки рекомендуется:
 
@@ -100,7 +104,13 @@ stock_quantity приходит текст вида «более 50».
 6. Пример запроса
 --------------------------------------------------------------------------------
 
-  curl "https://medknigaservis.ru/wp-json/mks-core/v1/stock?page=1&per_page=100&consumer_key=ck_xxxxxxxx&consumer_secret=cs_yyyyyyyy"
+  curl -u "ck_xxxxxxxx:cs_yyyyyyyy" \
+    "https://medknigaservis.ru/wp-json/mks-core/v1/stock?page=1&per_page=100"
+
+Эквивалент с явным заголовком Authorization:
+
+  curl -H "Authorization: Basic $(printf '%s' 'ck_xxxxxxxx:cs_yyyyyyyy' | base64 -w0)" \
+    "https://medknigaservis.ru/wp-json/mks-core/v1/stock?page=1&per_page=100"
 
 Пример ответа:
 
@@ -123,7 +133,7 @@ stock_quantity приходит текст вида «более 50».
 7. Как забирать все остатки (логика сессии)
 --------------------------------------------------------------------------------
 
-  1. Запросить page=1&per_page=100 (с ключами в query).
+  1. Запросить page=1&per_page=100 (с Basic Auth в заголовке Authorization).
   2. Прочитать заголовок X-WP-TotalPages.
   3. Последовательно запросить page=2 … page=N (тот же per_page=100).
   4. Следующий запрос — только после ответа предыдущего
