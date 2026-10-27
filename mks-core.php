@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       MKS Core
  * Description:       Общий функционал интернет-магазина (REST API остатков и др.).
- * Version:           0.2.0
+ * Version:           0.4.3
  * Requires at least: 5.9
  * Requires PHP:      7.4
  * Requires Plugins:  woocommerce
@@ -16,13 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MKS_CORE_VERSION', '0.2.0' );
+define( 'MKS_CORE_VERSION', '0.4.3' );
 define( 'MKS_CORE_FILE', __FILE__ );
 define( 'MKS_CORE_DIR', dirname( __FILE__ ) );
 
 require_once MKS_CORE_DIR . '/includes/class-roles.php';
 require_once MKS_CORE_DIR . '/includes/class-settings.php';
 require_once MKS_CORE_DIR . '/includes/class-rest-stock.php';
+require_once MKS_CORE_DIR . '/includes/class-category-badge.php';
 
 register_activation_hook( __FILE__, 'mks_core_activate' );
 register_deactivation_hook( __FILE__, array( 'MKS_Core_Roles', 'deactivate' ) );
@@ -33,6 +34,7 @@ register_deactivation_hook( __FILE__, array( 'MKS_Core_Roles', 'deactivate' ) );
 function mks_core_activate() {
 	MKS_Core_Roles::activate();
 	MKS_Core_Settings::activate();
+	MKS_Core_Category_Badge::activate();
 }
 
 /**
@@ -51,6 +53,7 @@ function mks_core_bootstrap() {
 
 	MKS_Core_Settings::init();
 	MKS_Core_REST_Stock::init();
+	MKS_Core_Category_Badge::init();
 }
 
 /**

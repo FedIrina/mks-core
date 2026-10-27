@@ -14,6 +14,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 
 require_once dirname( __FILE__ ) . '/includes/class-roles.php';
 require_once dirname( __FILE__ ) . '/includes/class-settings.php';
+require_once dirname( __FILE__ ) . '/includes/class-category-badge.php';
 
 remove_role( MKS_Core_Roles::ROLE );
 
@@ -23,3 +24,4 @@ if ( $admin ) {
 }
 
 delete_option( MKS_Core_Settings::OPTION );
+delete_option( MKS_Core_Category_Badge::OPTION );
