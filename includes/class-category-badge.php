@@ -121,13 +121,8 @@ class MKS_Core_Category_Badge {
 	 */
 	public static function render( $product_id ) {
 		$settings = self::get();
-		$user     = wp_get_current_user();
 
 		if ( ! $settings['enabled'] || ! $settings['term_ids'] || ! $settings['attachment_id'] ) {
-			return;
-		}
-
-		if ( ! in_array( 'administrator', (array) $user->roles, true ) ) {
 			return;
 		}
 
