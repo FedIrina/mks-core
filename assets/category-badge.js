@@ -3,52 +3,25 @@
 
 	$(function () {
 		var frame;
-		var $input = $('#mks-core-badge-attachment');
-		var $preview = $('#mks-core-badge-preview');
-		var $remove = $('#mks-core-badge-remove');
+		var $sets = $('#mks-badge-sets');
+		var template = document.getElementById('mks-badge-set-template');
 
-		$('.mks-core-color-picker').wpColorPicker();
-		$('#mks-core-badge-select').on('click', function (e) {
-			e.preventDefault();
+		if (!$sets.length || !template) {
+			return;
+		}
 
-			if (frame) {
-				frame.open();
-				return;
-			}
+		var nextIndex = $sets.children('.mks-badge-set').length;
 
-			frame = wp.media({
-				title: 'Выберите изображение бейджа',
-				button: { text: 'Использовать' },
-				multiple: false
+		function renumber() {
+			$sets.children('.mks-badge-set').each(function (i) {
+				$(this).find('.mks-badge-set-number').text(i + 1);
 			});
+		}
 
-			frame.on('select', function () {
-				var attachment = frame.state().get('selection').first().toJSON();
+		function renderSelected($set) {
+			var $selected = $set.find('.mks-badge-selected').empty();
 
-				$input.val(attachment.id);
-				$preview.attr('src', attachment.url).show();
-				$remove.show();
-			});
-
-			frame.open();
-		});
-
-		$remove.on('click', function (e) {
-			e.preventDefault();
-
-			$input.val('');
-			$preview.attr('src', '').hide();
-			$remove.hide();
-		});
-
-		var $search = $('#mks-core-badge-cats-search');
-		var $cats = $('#mks-core-badge-cats');
-		var $selected = $('#mks-core-badge-selected');
-
-		function renderSelected() {
-			$selected.empty();
-
-			$cats.find('input[type="checkbox"]:checked').each(function () {
+			$set.find('.mks-badge-cats input[type="checkbox"]:checked').each(function () {
 				var $checkbox = $(this);
 				var $chip = $('<span class="mks-badge-chip"></span>').text($checkbox.parent('label').text().trim());
 
@@ -62,12 +35,24 @@
 			});
 		}
 
-		$cats.on('change', 'input[type="checkbox"]', renderSelected);
-		renderSelected();
+		function initSet($set) {
+			$set.find('.mks-core-color-picker').wpColorPicker();
+			renderSelected($set);
+		}
 
-		$search.on('input', function () {
+		$sets.children('.mks-badge-set').each(function () {
+			initSet($(this));
+		});
+		renumber();
+
+		$sets.on('change', '.mks-badge-cats input[type="checkbox"]', function () {
+			renderSelected($(this).closest('.mks-badge-set'));
+		});
+
+		$sets.on('input', '.mks-badge-cats-search', function () {
+			var $set = $(this).closest('.mks-badge-set');
 			var query = $.trim($(this).val().toLowerCase());
-			var $items = $cats.find('li');
+			var $items = $set.find('.mks-badge-cats li');
 
 			if (!query) {
 				$items.show();
@@ -82,6 +67,58 @@
 					$item.show().parents('li').show();
 				}
 			});
+		});
+
+		$sets.on('click', '.mks-badge-pick', function (e) {
+			e.preventDefault();
+
+			var $set = $(this).closest('.mks-badge-set');
+
+			if (!frame) {
+				frame = wp.media({
+					title: 'Выберите изображение бейджа',
+					button: { text: 'Использовать' },
+					multiple: false
+				});
+			}
+
+			frame.off('select');
+			frame.on('select', function () {
+				var attachment = frame.state().get('selection').first().toJSON();
+
+				$set.find('.mks-badge-attachment').val(attachment.id);
+				$set.find('.mks-badge-preview').attr('src', attachment.url).show();
+				$set.find('.mks-badge-remove').show();
+			});
+
+			frame.open();
+		});
+
+		$sets.on('click', '.mks-badge-remove', function (e) {
+			e.preventDefault();
+
+			var $set = $(this).closest('.mks-badge-set');
+
+			$set.find('.mks-badge-attachment').val('');
+			$set.find('.mks-badge-preview').attr('src', '').hide();
+			$(this).hide();
+		});
+
+		$sets.on('click', '.mks-badge-set-remove', function (e) {
+			e.preventDefault();
+
+			$(this).closest('.mks-badge-set').remove();
+			renumber();
+		});
+
+		$('#mks-badge-add').on('click', function (e) {
+			e.preventDefault();
+
+			var $set = $(template.innerHTML.replace(/__index__/g, nextIndex++));
+
+			$sets.append($set);
+			initSet($set);
+			renumber();
 		});
 	});
 })(jQuery);

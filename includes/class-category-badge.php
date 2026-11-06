@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Stores the category badge rule and renders its settings page.
+ * Stores the category badge rules and renders its settings page.
  */
 class MKS_Core_Category_Badge {
 
@@ -24,7 +24,18 @@ class MKS_Core_Category_Badge {
 	 */
 	public static function defaults() {
 		return array(
-			'enabled'       => 0,
+			'enabled' => 0,
+			'badges'  => array(),
+		);
+	}
+
+	/**
+	 * Default values of a single badge.
+	 *
+	 * @return array
+	 */
+	public static function default_badge() {
+		return array(
 			'term_ids'      => array(),
 			'attachment_id' => 0,
 			'text'          => '',
@@ -46,7 +57,29 @@ class MKS_Core_Category_Badge {
 			unset( $stored['term_id'] );
 		}
 
-		return wp_parse_args( $stored, self::defaults() );
+		if ( ! isset( $stored['badges'] ) ) {
+			$stored['badges'] = array(
+				array(
+					'term_ids'      => isset( $stored['term_ids'] ) ? (array) $stored['term_ids'] : array(),
+					'attachment_id' => isset( $stored['attachment_id'] ) ? (int) $stored['attachment_id'] : 0,
+					'text'          => isset( $stored['text'] ) ? $stored['text'] : '',
+					'text_color'    => isset( $stored['text_color'] ) ? $stored['text_color'] : '',
+				),
+			);
+			unset( $stored['term_ids'], $stored['attachment_id'], $stored['text'], $stored['text_color'] );
+		}
+
+		$settings = wp_parse_args( $stored, self::defaults() );
+
+		$badges = array();
+		foreach ( (array) $settings['badges'] as $badge ) {
+			if ( is_array( $badge ) ) {
+				$badges[] = wp_parse_args( $badge, self::default_badge() );
+			}
+		}
+		$settings['badges'] = $badges;
+
+		return $settings;
 	}
 
 	/**
@@ -122,31 +155,37 @@ class MKS_Core_Category_Badge {
 	public static function render( $product_id ) {
 		$settings = self::get();
 
-		if ( ! $settings['enabled'] || ! $settings['term_ids'] || ! $settings['attachment_id'] ) {
+		if ( ! $settings['enabled'] || ! $settings['badges'] ) {
 			return;
 		}
 
-		if ( ! has_term( $settings['term_ids'], 'product_cat', $product_id ) ) {
-			return;
-		}
+		foreach ( $settings['badges'] as $badge ) {
+			if ( ! $badge['term_ids'] || ! $badge['attachment_id'] ) {
+				continue;
+			}
 
-		$image = wp_get_attachment_image(
-			(int) $settings['attachment_id'],
-			'full',
-			false,
-			array( 'class' => 'mks-category-badge-img', 'alt' => '' )
-		);
+			if ( ! has_term( $badge['term_ids'], 'product_cat', $product_id ) ) {
+				continue;
+			}
 
-		echo '<div class="mks-category-badge">';
-		echo $image; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		if ( '' !== $settings['text'] ) {
-			printf(
-				'<span class="mks-category-badge-text" style="color:%s;">%s</span>',
-				esc_attr( $settings['text_color'] ),
-				esc_html( $settings['text'] )
+			$image = wp_get_attachment_image(
+				(int) $badge['attachment_id'],
+				'full',
+				false,
+				array( 'class' => 'mks-category-badge-img', 'alt' => '' )
 			);
+
+			echo '<div class="mks-category-badge">';
+			echo $image; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			if ( '' !== $badge['text'] ) {
+				printf(
+					'<span class="mks-category-badge-text" style="color:%s;">%s</span>',
+					esc_attr( $badge['text_color'] ),
+					esc_html( $badge['text'] )
+				);
+			}
+			echo '</div>';
 		}
-		echo '</div>';
 	}
 
 	/**
@@ -165,47 +204,23 @@ class MKS_Core_Category_Badge {
 
 		add_settings_section(
 			'mks_core_category_badge',
-			'Бейдж-картинка для категории',
+			'Бейджи для категорий',
 			array( __CLASS__, 'section_intro' ),
 			self::PAGE
 		);
 
 		add_settings_field(
 			'enabled',
-			'Показывать бейдж',
+			'Показывать бейджи',
 			array( __CLASS__, 'field_enabled' ),
 			self::PAGE,
 			'mks_core_category_badge'
 		);
 
 		add_settings_field(
-			'term_ids',
-			'Товарные категории',
-			array( __CLASS__, 'field_term' ),
-			self::PAGE,
-			'mks_core_category_badge'
-		);
-
-		add_settings_field(
-			'attachment_id',
-			'Изображение',
-			array( __CLASS__, 'field_image' ),
-			self::PAGE,
-			'mks_core_category_badge'
-		);
-
-		add_settings_field(
-			'text',
-			'Текст на бейдже',
-			array( __CLASS__, 'field_text' ),
-			self::PAGE,
-			'mks_core_category_badge'
-		);
-
-		add_settings_field(
-			'text_color',
-			'Цвет текста',
-			array( __CLASS__, 'field_text_color' ),
+			'badges',
+			'Бейджи',
+			array( __CLASS__, 'field_badges' ),
 			self::PAGE,
 			'mks_core_category_badge'
 		);
@@ -215,7 +230,7 @@ class MKS_Core_Category_Badge {
 	 * Section description.
 	 */
 	public static function section_intro() {
-		echo '<p>Бейдж-картинка выводится на всех товарах выбранных категорий. Переключатель действует сразу на все товары.</p>';
+		echo '<p>Бейдж выводится на всех товарах выбранных категорий. Каждый бейдж задаётся отдельно: свой набор категорий, картинка, текст и цвет текста.</p>';
 	}
 
 	/**
@@ -230,25 +245,41 @@ class MKS_Core_Category_Badge {
 		}
 
 		$output['enabled'] = empty( $input['enabled'] ) ? 0 : 1;
+		$output['badges']  = array();
 
-		$term_ids = array();
-		if ( isset( $input['term_ids'] ) && is_array( $input['term_ids'] ) ) {
-			foreach ( $input['term_ids'] as $term_id ) {
-				$term = get_term( absint( $term_id ), 'product_cat' );
-				if ( $term && ! is_wp_error( $term ) ) {
-					$term_ids[] = (int) $term->term_id;
+		if ( ! isset( $input['badges'] ) || ! is_array( $input['badges'] ) ) {
+			return $output;
+		}
+
+		foreach ( $input['badges'] as $badge ) {
+			if ( ! is_array( $badge ) ) {
+				continue;
+			}
+
+			$term_ids = array();
+			if ( isset( $badge['term_ids'] ) && is_array( $badge['term_ids'] ) ) {
+				foreach ( $badge['term_ids'] as $term_id ) {
+					$term = get_term( absint( $term_id ), 'product_cat' );
+					if ( $term && ! is_wp_error( $term ) ) {
+						$term_ids[] = (int) $term->term_id;
+					}
 				}
 			}
+
+			if ( ! $term_ids ) {
+				continue;
+			}
+
+			$attachment_id = isset( $badge['attachment_id'] ) ? absint( $badge['attachment_id'] ) : 0;
+			$text_color    = isset( $badge['text_color'] ) ? sanitize_hex_color( $badge['text_color'] ) : '';
+
+			$output['badges'][] = array(
+				'term_ids'      => $term_ids,
+				'attachment_id' => ( $attachment_id && wp_attachment_is_image( $attachment_id ) ) ? $attachment_id : 0,
+				'text'          => isset( $badge['text'] ) ? sanitize_text_field( $badge['text'] ) : '',
+				'text_color'    => $text_color ? $text_color : self::default_badge()['text_color'],
+			);
 		}
-		$output['term_ids'] = $term_ids;
-
-		$attachment_id = isset( $input['attachment_id'] ) ? absint( $input['attachment_id'] ) : 0;
-		$output['attachment_id'] = ( $attachment_id && wp_attachment_is_image( $attachment_id ) ) ? $attachment_id : 0;
-
-		$output['text'] = isset( $input['text'] ) ? sanitize_text_field( $input['text'] ) : '';
-
-		$text_color = isset( $input['text_color'] ) ? sanitize_hex_color( $input['text_color'] ) : '';
-		$output['text_color'] = $text_color ? $text_color : self::defaults()['text_color'];
 
 		return $output;
 	}
@@ -259,19 +290,24 @@ class MKS_Core_Category_Badge {
 	public static function field_enabled() {
 		$settings = self::get();
 		printf(
-			'<label><input type="checkbox" name="%1$s[enabled]" value="1"%2$s /> Показывать бейдж на товарах выбранных категорий</label>',
+			'<label><input type="checkbox" name="%1$s[enabled]" value="1"%2$s /> Показывать бейджи на товарах выбранных категорий</label>',
 			esc_attr( self::OPTION ),
 			checked( $settings['enabled'], 1, false )
 		);
 	}
 
 	/**
-	 * Field: product categories (multiple).
+	 * Field: badge sets (repeatable).
 	 */
-	public static function field_term() {
+	public static function field_badges() {
 		$settings = self::get();
-		$selected = array_map( 'intval', $settings['term_ids'] );
-		$terms    = get_terms(
+		$badges   = $settings['badges'];
+
+		if ( ! $badges ) {
+			$badges = array( self::default_badge() );
+		}
+
+		$terms = get_terms(
 			array(
 				'taxonomy'   => 'product_cat',
 				'hide_empty' => false,
@@ -289,36 +325,78 @@ class MKS_Core_Category_Badge {
 			$children[ (int) $term->parent ][] = $term;
 		}
 
-		echo '<style>.mks-badge-cats{list-style:none;margin:0}.mks-badge-cats ul{list-style:none;margin:0 0 0 18px}.mks-badge-chip{display:inline-block;margin:0 6px 6px 0;padding:1px 4px 1px 8px;background:#f0f0f1;border:1px solid #c3c4c7;border-radius:3px;font-size:14px;line-height:1.8;white-space:nowrap}.mks-badge-chip button{padding:0 4px;border:0;background:none;color:#787c82;cursor:pointer;font-size:16px;line-height:1}.mks-badge-chip button:hover{color:#d63638}</style>';
-		echo '<div id="mks-core-badge-selected" style="margin-bottom:8px;"></div>';
-		printf(
-			'<p><input type="search" id="mks-core-badge-cats-search" class="regular-text" placeholder="%s" /></p>',
-			esc_attr__( 'Поиск категории…', 'mks-core' )
-		);
-		echo '<div style="display:inline-block;max-width:100%;max-height:300px;overflow-y:scroll;padding:6px 4px 6px 6px;border:1px solid #dcdcde;background:#fff;">';
-		echo '<ul class="mks-badge-cats" id="mks-core-badge-cats">';
-		self::render_term_checkboxes( $children, 0, $selected );
-		echo '</ul>';
+		echo '<style>#mks-badge-sets .mks-badge-set{border:1px solid #c3c4c7;background:#fff;padding:0 12px 8px;margin:0 0 12px;max-width:760px}.mks-badge-set-head{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f1;margin-bottom:8px}.mks-badge-set-head strong{font-size:14px}.mks-badge-cats{list-style:none;margin:0}.mks-badge-cats ul{list-style:none;margin:0 0 0 18px}.mks-badge-cats-scroll{display:inline-block;max-width:100%;max-height:220px;overflow-y:scroll;padding:6px 4px 6px 6px;border:1px solid #dcdcde;background:#fff}.mks-badge-chip{display:inline-block;margin:0 6px 6px 0;padding:1px 4px 1px 8px;background:#f0f0f1;border:1px solid #c3c4c7;border-radius:3px;font-size:14px;line-height:1.8;white-space:nowrap}.mks-badge-chip button{padding:0 4px;border:0;background:none;color:#787c82;cursor:pointer;font-size:16px;line-height:1}.mks-badge-chip button:hover{color:#d63638}</style>';
+		echo '<div id="mks-badge-sets">';
+		foreach ( $badges as $index => $badge ) {
+			self::render_badge_set( $children, $index, $badge );
+		}
 		echo '</div>';
-		echo '<p class="description">Категории товаров, которым назначается бейдж.</p>';
+		echo '<p><button type="button" class="button" id="mks-badge-add">Добавить бейдж</button></p>';
+		echo '<template id="mks-badge-set-template">';
+		self::render_badge_set( $children, '__index__', self::default_badge() );
+		echo '</template>';
+	}
+
+	/**
+	 * Renders one badge set.
+	 *
+	 * @param array      $children Terms grouped by parent ID.
+	 * @param int|string $index    Badge index or template placeholder.
+	 * @param array      $badge    Badge values.
+	 */
+	private static function render_badge_set( $children, $index, $badge ) {
+		$name_base     = self::OPTION . '[badges][' . $index . ']';
+		$attachment_id = (int) $badge['attachment_id'];
+		$image_url     = $attachment_id ? wp_get_attachment_image_url( $attachment_id, 'medium' ) : '';
+		$selected      = array_map( 'intval', (array) $badge['term_ids'] );
+		?>
+		<div class="mks-badge-set">
+			<div class="mks-badge-set-head">
+				<strong>Бейдж <span class="mks-badge-set-number"><?php echo is_int( $index ) ? (int) $index + 1 : ''; ?></span></strong>
+				<button type="button" class="button-link button-link-delete mks-badge-set-remove">Удалить бейдж</button>
+			</div>
+			<p><strong>Товарные категории</strong></p>
+			<div class="mks-badge-selected"></div>
+			<p><input type="search" class="mks-badge-cats-search regular-text" placeholder="Поиск категории…" /></p>
+			<div class="mks-badge-cats-scroll">
+				<ul class="mks-badge-cats">
+					<?php self::render_term_checkboxes( $children, 0, $selected, $name_base . '[term_ids][]' ); ?>
+				</ul>
+			</div>
+			<p><strong>Изображение</strong></p>
+			<input type="hidden" class="mks-badge-attachment" name="<?php echo esc_attr( $name_base . '[attachment_id]' ); ?>" value="<?php echo esc_attr( $attachment_id ); ?>" />
+			<img class="mks-badge-preview" src="<?php echo esc_url( $image_url ); ?>" alt="" style="max-width:200px;height:auto;display:<?php echo $image_url ? 'block' : 'none'; ?>;margin-bottom:10px;" />
+			<p>
+				<button type="button" class="button mks-badge-pick">Выбрать изображение</button>
+				<button type="button" class="button-link button-link-delete mks-badge-remove" style="display:<?php echo $attachment_id ? 'inline' : 'none'; ?>;">Удалить</button>
+			</p>
+			<p><strong>Текст на бейдже</strong><br />
+				<input type="text" class="regular-text" name="<?php echo esc_attr( $name_base . '[text]' ); ?>" value="<?php echo esc_attr( $badge['text'] ); ?>" />
+			</p>
+			<p><strong>Цвет текста</strong><br />
+				<input type="text" class="mks-core-color-picker" name="<?php echo esc_attr( $name_base . '[text_color]' ); ?>" value="<?php echo esc_attr( $badge['text_color'] ); ?>" data-default-color="<?php echo esc_attr( self::default_badge()['text_color'] ); ?>" />
+			</p>
+		</div>
+		<?php
 	}
 
 	/**
 	 * Renders nested category checkboxes.
 	 *
-	 * @param array $children Terms grouped by parent ID.
-	 * @param int   $parent   Parent term ID.
-	 * @param array $selected Selected term IDs.
+	 * @param array  $children Terms grouped by parent ID.
+	 * @param int    $parent   Parent term ID.
+	 * @param array  $selected Selected term IDs.
+	 * @param string $name     Checkbox name attribute.
 	 */
-	private static function render_term_checkboxes( $children, $parent, $selected ) {
+	private static function render_term_checkboxes( $children, $parent, $selected, $name ) {
 		if ( empty( $children[ $parent ] ) ) {
 			return;
 		}
 
 		foreach ( $children[ $parent ] as $term ) {
 			printf(
-				'<li><label><input type="checkbox" name="%1$s[term_ids][]" value="%2$d"%3$s /> %4$s</label>',
-				esc_attr( self::OPTION ),
+				'<li><label><input type="checkbox" name="%1$s" value="%2$d"%3$s /> %4$s</label>',
+				esc_attr( $name ),
 				(int) $term->term_id,
 				checked( in_array( (int) $term->term_id, $selected, true ), true, false ),
 				esc_html( $term->name )
@@ -326,70 +404,12 @@ class MKS_Core_Category_Badge {
 
 			if ( ! empty( $children[ (int) $term->term_id ] ) ) {
 				echo '<ul>';
-				self::render_term_checkboxes( $children, (int) $term->term_id, $selected );
+				self::render_term_checkboxes( $children, (int) $term->term_id, $selected, $name );
 				echo '</ul>';
 			}
 
 			echo '</li>';
 		}
-	}
-
-	/**
-	 * Field: badge image.
-	 */
-	public static function field_image() {
-		$settings      = self::get();
-		$attachment_id = (int) $settings['attachment_id'];
-		$image_url     = $attachment_id ? wp_get_attachment_image_url( $attachment_id, 'medium' ) : '';
-
-		printf(
-			'<input type="hidden" id="mks-core-badge-attachment" name="%1$s[attachment_id]" value="%2$d" />',
-			esc_attr( self::OPTION ),
-			$attachment_id
-		);
-		printf(
-			'<img id="mks-core-badge-preview" src="%1$s" alt="" style="max-width:200px;height:auto;display:%2$s;margin-bottom:10px;" />',
-			esc_url( $image_url ),
-			$image_url ? 'block' : 'none'
-		);
-		echo '<p>';
-		echo '<button type="button" class="button" id="mks-core-badge-select">Выбрать изображение</button> ';
-		printf(
-			'<button type="button" class="button-link button-link-delete" id="mks-core-badge-remove" style="display:%s;">Удалить</button>',
-			$attachment_id ? 'inline' : 'none'
-		);
-		echo '</p>';
-		echo '<p class="description">Картинка из медиатеки. Небольшое изображение в PNG с прозрачным фоном.</p>';
-	}
-
-	/**
-	 * Field: badge text.
-	 */
-	public static function field_text() {
-		$settings = self::get();
-
-		printf(
-			'<input type="text" name="%1$s[text]" value="%2$s" class="regular-text" />',
-			esc_attr( self::OPTION ),
-			esc_attr( $settings['text'] )
-		);
-		echo '<p class="description">Например, «20%». Если поле пустое, выводится только картинка.</p>';
-	}
-
-	/**
-	 * Field: text color.
-	 */
-	public static function field_text_color() {
-		$settings = self::get();
-		$defaults = self::defaults();
-
-		printf(
-			'<input type="text" class="mks-core-color-picker" name="%1$s[text_color]" value="%2$s" data-default-color="%3$s" />',
-			esc_attr( self::OPTION ),
-			esc_attr( $settings['text_color'] ),
-			esc_attr( $defaults['text_color'] )
-		);
-		echo '<p class="description">Цвет текста поверх картинки.</p>';
 	}
 
 	/**
