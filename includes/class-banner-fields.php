@@ -22,7 +22,33 @@ class MKS_Core_Banner_Fields {
 	 */
 	public static function init() {
 		add_action( 'acf/init', array( __CLASS__, 'register' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_admin_assets' ) );
 		add_filter( 'acf/validate_value/key=field_mks_countdown_until', array( __CLASS__, 'validate_until' ), 10, 4 );
+	}
+
+	/**
+	 * Hides banner image and caption fields when the timer type is selected.
+	 *
+	 * @param string $hook Current admin page hook.
+	 */
+	public static function enqueue_admin_assets( $hook ) {
+		if ( 'post.php' !== $hook && 'post-new.php' !== $hook ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+
+		if ( 'banner' !== $screen->post_type ) {
+			return;
+		}
+
+		wp_enqueue_script(
+			'mks-core-banner-admin',
+			plugins_url( 'assets/banner-admin.js', MKS_CORE_FILE ),
+			array(),
+			MKS_CORE_VERSION,
+			true
+		);
 	}
 
 	/**
@@ -78,6 +104,16 @@ class MKS_Core_Banner_Fields {
 						'layout'        => 'horizontal',
 					),
 					array(
+						'key'           => 'field_mks_banner_show_from',
+						'name'          => 'banner_show_from',
+						'label'         => 'Показывать с',
+						'instructions'  => 'Пустое значение — показывать сразу после публикации.',
+						'type'          => 'date_time_picker',
+						'display_format' => 'd.m.Y H:i',
+						'return_format'  => 'Y-m-d H:i:s',
+						'first_day'      => 1,
+					),
+					array(
 						'key'               => 'field_mks_countdown_until',
 						'name'              => 'countdown_until',
 						'label'             => 'Дата и время окончания акции',
@@ -128,6 +164,38 @@ class MKS_Core_Banner_Fields {
 				'show_in_rest'          => 0,
 			)
 		);
+	}
+
+	/**
+	 * Checks whether the banner show window is open.
+	 *
+	 * @param int $post_id Banner ID.
+	 * @return bool
+	 */
+	public static function is_visible( $post_id ) {
+		$show_from = get_field( 'banner_show_from', $post_id );
+
+		if ( $show_from ) {
+			$from = DateTime::createFromFormat( 'Y-m-d H:i:s', $show_from, wp_timezone() );
+
+			if ( $from && $from->getTimestamp() > time() ) {
+				return false;
+			}
+		}
+
+		if ( 'countdown' === get_field( 'countdown_type', $post_id ) ) {
+			$until = get_field( 'countdown_until', $post_id );
+
+			if ( $until ) {
+				$end = DateTime::createFromFormat( 'Y-m-d H:i:s', $until, wp_timezone() );
+
+				if ( $end && $end->getTimestamp() <= time() ) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
