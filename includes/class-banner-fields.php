@@ -85,6 +85,9 @@ class MKS_Core_Banner_Fields {
 						'display_format' => 'd.m.Y H:i',
 						'return_format'  => 'Y-m-d H:i:s',
 						'first_day'      => 1,
+						'wrapper'        => array(
+							'width' => '50',
+						),
 					),
 					array(
 						'key'            => 'field_mks_countdown_until',
@@ -95,6 +98,9 @@ class MKS_Core_Banner_Fields {
 						'display_format' => 'd.m.Y H:i',
 						'return_format'  => 'Y-m-d H:i:s',
 						'first_day'      => 1,
+						'wrapper'        => array(
+							'width' => '50',
+						),
 					),
 					array(
 						'key'           => 'field_mks_countdown_title',
