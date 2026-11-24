@@ -24,6 +24,10 @@ require_once MKS_CORE_DIR . '/includes/class-roles.php';
 require_once MKS_CORE_DIR . '/includes/class-settings.php';
 require_once MKS_CORE_DIR . '/includes/class-rest-stock.php';
 require_once MKS_CORE_DIR . '/includes/class-category-badge.php';
+require_once MKS_CORE_DIR . '/includes/class-banner-fields.php';
+
+// Header banners are independent of WooCommerce, so this runs unconditionally.
+MKS_Core_Banner_Fields::init();
 
 register_activation_hook( __FILE__, 'mks_core_activate' );
 register_deactivation_hook( __FILE__, array( 'MKS_Core_Roles', 'deactivate' ) );
