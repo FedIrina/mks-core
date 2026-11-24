@@ -138,6 +138,10 @@ class MKS_Core_Banner_Fields {
 	 * @return bool
 	 */
 	public static function is_visible( $post_id ) {
+		if ( ! function_exists( 'get_field' ) ) {
+			return true;
+		}
+
 		if ( ! get_field( 'countdown_until', $post_id ) ) {
 			return true;
 		}
@@ -152,6 +156,10 @@ class MKS_Core_Banner_Fields {
 	 * @return bool
 	 */
 	public static function is_countdown_active( $post_id ) {
+		if ( ! function_exists( 'get_field' ) ) {
+			return false;
+		}
+
 		$start = self::field_timestamp( 'banner_show_from', $post_id );
 		$end   = self::field_timestamp( 'countdown_until', $post_id );
 

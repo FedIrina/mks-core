@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the MKS Core plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: MKS Core 0.6.2\n"
+"Project-Id-Version: MKS Core 0.6.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mks-core\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -280,6 +280,10 @@ msgstr ""
 msgid "Значение выбранного атрибута (в БД — слаг термина)."
 msgstr ""
 
-#: mks-core.php:83
+#: mks-core.php:88
+msgid "MKS Core: поля «Баннеры в шапке» требуют активный плагин Advanced Custom Fields."
+msgstr ""
+
+#: mks-core.php:101
 msgid "MKS Core требует активный плагин WooCommerce."
 msgstr ""

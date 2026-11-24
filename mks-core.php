@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       MKS Core
  * Description:       Общий функционал интернет-магазина (REST API остатков и др.).
- * Version:           0.6.2
+ * Version:           0.6.3
  * Requires at least: 5.9
  * Requires PHP:      7.4
  * Requires Plugins:  woocommerce
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MKS_CORE_VERSION', '0.6.2' );
+define( 'MKS_CORE_VERSION', '0.6.3' );
 define( 'MKS_CORE_FILE', __FILE__ );
 define( 'MKS_CORE_DIR', dirname( __FILE__ ) );
 
@@ -27,8 +27,7 @@ require_once MKS_CORE_DIR . '/includes/class-category-badge.php';
 require_once MKS_CORE_DIR . '/includes/class-banner-fields.php';
 require_once MKS_CORE_DIR . '/includes/class-countdown.php';
 
-// Header banners are independent of WooCommerce, so this runs unconditionally.
-MKS_Core_Banner_Fields::init();
+// The timer does not depend on WooCommerce or ACF, so it runs unconditionally.
 MKS_Core_Countdown::init();
 
 add_action( 'init', 'mks_core_load_textdomain' );
@@ -58,9 +57,15 @@ function mks_core_activate() {
 add_action( 'plugins_loaded', 'mks_core_bootstrap' );
 
 /**
- * Загружает плагин, если доступен WooCommerce.
+ * Загружает плагин, если доступны нужные зависимости.
  */
 function mks_core_bootstrap() {
+	if ( function_exists( 'acf_add_local_field_group' ) ) {
+		MKS_Core_Banner_Fields::init();
+	} else {
+		add_action( 'admin_notices', 'mks_core_acf_missing_notice' );
+	}
+
 	if ( ! class_exists( 'WooCommerce' ) ) {
 		add_action( 'admin_notices', 'mks_core_woocommerce_missing_notice' );
 		return;
@@ -69,6 +74,19 @@ function mks_core_bootstrap() {
 	MKS_Core_Settings::init();
 	MKS_Core_REST_Stock::init();
 	MKS_Core_Category_Badge::init();
+}
+
+/**
+ * Уведомление в админке, если ACF неактивен.
+ */
+function mks_core_acf_missing_notice() {
+	if ( ! current_user_can( 'activate_plugins' ) ) {
+		return;
+	}
+
+	echo '<div class="notice notice-error"><p>';
+	echo esc_html__( 'MKS Core: поля «Баннеры в шапке» требуют активный плагин Advanced Custom Fields.', 'mks-core' );
+	echo '</p></div>';
 }
 
 /**
