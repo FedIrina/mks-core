@@ -35,7 +35,7 @@ register_activation_hook( __FILE__, 'mks_core_activate' );
 register_deactivation_hook( __FILE__, array( 'MKS_Core_Roles', 'deactivate' ) );
 
 /**
- * Plugin activation.
+ * Активация плагина.
  */
 function mks_core_activate() {
 	MKS_Core_Roles::activate();
@@ -44,12 +44,12 @@ function mks_core_activate() {
 }
 
 /**
- * Bootstrap after plugins are loaded.
+ * Инициализация после загрузки плагинов.
  */
 add_action( 'plugins_loaded', 'mks_core_bootstrap' );
 
 /**
- * Loads the plugin when WooCommerce is available.
+ * Загружает плагин, если доступен WooCommerce.
  */
 function mks_core_bootstrap() {
 	if ( ! class_exists( 'WooCommerce' ) ) {
@@ -63,7 +63,7 @@ function mks_core_bootstrap() {
 }
 
 /**
- * Admin notice when WooCommerce is inactive.
+ * Уведомление в админке, если WooCommerce неактивен.
  */
 function mks_core_woocommerce_missing_notice() {
 	if ( ! current_user_can( 'activate_plugins' ) ) {

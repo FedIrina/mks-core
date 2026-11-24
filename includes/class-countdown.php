@@ -1,6 +1,6 @@
 <?php
 /**
- * Countdown timer.
+ * Таймер обратного отсчёта.
  *
  * @package mks-core
  */
@@ -10,14 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Renders the countdown timer for the header area and for post content.
+ * Выводит таймер обратного отсчёта для области шапки и для содержимого записей.
  */
 class MKS_Core_Countdown {
 
 	const DEFAULT_TITLE = 'До конца акции осталось';
 
 	/**
-	 * Hooks.
+	 * Хуки.
 	 */
 	public static function init() {
 		add_shortcode( 'mks_countdown', array( __CLASS__, 'shortcode' ) );
@@ -25,7 +25,7 @@ class MKS_Core_Countdown {
 	}
 
 	/**
-	 * Loads styles and script where the timer may appear.
+	 * Подключает стили и скрипт там, где может появиться таймер.
 	 */
 	public static function enqueue_assets() {
 		$needs_assets = is_front_page();
@@ -47,9 +47,9 @@ class MKS_Core_Countdown {
 	}
 
 	/**
-	 * Shortcode wrapper.
+	 * Обёртка шорткода.
 	 *
-	 * @param array $atts Shortcode attributes.
+	 * @param array $atts Атрибуты шорткода.
 	 * @return string
 	 */
 	public static function shortcode( $atts ) {
@@ -66,9 +66,9 @@ class MKS_Core_Countdown {
 	}
 
 	/**
-	 * Builds the timer markup.
+	 * Формирует разметку таймера.
 	 *
-	 * @param array $args Timer arguments.
+	 * @param array $args Аргументы таймера.
 	 * @return string
 	 */
 	public static function render( $args = array() ) {
@@ -130,9 +130,9 @@ class MKS_Core_Countdown {
 	}
 
 	/**
-	 * Parses the end date in the site timezone.
+	 * Разбирает дату окончания в часовом поясе сайта.
 	 *
-	 * @param string $value Date in Y-m-d H:i:s.
+	 * @param string $value Дата в формате Y-m-d H:i:s.
 	 * @return DateTime|false
 	 */
 	private static function parse_until( $value ) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Role and capability for API partners.
+ * Роль и право для API-партнёров.
  *
  * @package mks-core
  */
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registers and manages the mks_api_partner role.
+ * Регистрирует и обслуживает роль mks_api_partner.
  */
 class MKS_Core_Roles {
 
@@ -18,7 +18,7 @@ class MKS_Core_Roles {
 	const CAPABILITY    = 'read_mks_api';
 
 	/**
-	 * Adds the partner role with read_mks_api (on plugin activation).
+	 * Добавляет роль партнёра с правом read_mks_api (при активации плагина).
 	 */
 	public static function activate() {
 		add_role(
@@ -42,8 +42,8 @@ class MKS_Core_Roles {
 	}
 
 	/**
-	 * Intentionally empty: do not remove the role on deactivate
-	 * so assigned users keep their role.
+	 * Намеренно пусто: роль не удаляется при деактивации,
+	 * чтобы у назначенных пользователей она сохранилась.
 	 */
 	public static function deactivate() {
 	}

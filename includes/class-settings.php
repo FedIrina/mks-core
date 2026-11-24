@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin settings (Settings → MKS Core).
+ * Настройки плагина (Настройки → MKS Core).
  *
  * @package mks-core
  */
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registers and renders MKS Core settings.
+ * Регистрирует и выводит настройки MKS Core.
  */
 class MKS_Core_Settings {
 
@@ -18,7 +18,7 @@ class MKS_Core_Settings {
 	const PAGE   = 'mks-core';
 
 	/**
-	 * Default option values.
+	 * Значения настроек по умолчанию.
 	 *
 	 * @return array
 	 */
@@ -33,6 +33,8 @@ class MKS_Core_Settings {
 	}
 
 	/**
+	 * Текущие настройки, дополненные значениями по умолчанию.
+	 *
 	 * @return array
 	 */
 	public static function get() {
@@ -49,7 +51,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Writes defaults once (activation).
+	 * Записывает значения по умолчанию один раз (при активации).
 	 */
 	public static function activate() {
 		if ( false === get_option( self::OPTION ) ) {
@@ -58,7 +60,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Hooks.
+	 * Хуки.
 	 */
 	public static function init() {
 		add_action( 'admin_init', array( __CLASS__, 'register' ) );
@@ -68,7 +70,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * @param string $hook Current admin page hook.
+	 * @param string $hook Текущий хук админ-страницы.
 	 */
 	public static function enqueue_assets( $hook ) {
 		if ( 'settings_page_' . self::PAGE !== $hook ) {
@@ -124,7 +126,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * AJAX: terms for selected attribute taxonomy.
+	 * AJAX: значения выбранного атрибута-таксономии.
 	 */
 	public static function ajax_attribute_terms() {
 		check_ajax_referer( 'mks_core_settings', 'nonce' );
@@ -169,7 +171,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Registers setting and fields.
+	 * Регистрирует настройку и поля.
 	 */
 	public static function register() {
 		register_setting(
@@ -231,7 +233,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Adds page under Settings.
+	 * Добавляет страницу в раздел «Настройки».
 	 */
 	public static function add_menu() {
 		add_options_page(
@@ -244,14 +246,14 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Section description.
+	 * Описание секции.
 	 */
 	public static function section_rest_api() {
 		echo '<p>Параметры выдачи остатков по атрибуту товара.</p>';
 	}
 
 	/**
-	 * @param array $input Raw input.
+	 * @param array $input Необработанный ввод.
 	 * @return array
 	 */
 	public static function sanitize( $input ) {
@@ -313,9 +315,9 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Accepts full URL or path after /wp-json/; stores path only.
+	 * Принимает полный URL или путь после /wp-json/; сохраняет только путь.
 	 *
-	 * @param string $value Raw value.
+	 * @param string $value Необработанное значение.
 	 * @return string
 	 */
 	public static function normalize_endpoint_path( $value ) {
@@ -344,7 +346,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Full public URL for the configured endpoint.
+	 * Полный публичный URL настроенного эндпоинта.
 	 *
 	 * @return string
 	 */
@@ -354,9 +356,9 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Splits endpoint_path into namespace + route for register_rest_route.
+	 * Делит endpoint_path на пространство имён и маршрут для register_rest_route.
 	 *
-	 * @return array{0:string,1:string} Namespace and route (with leading slash).
+	 * @return array{0:string,1:string} Пространство имён и маршрут (с ведущим слешем).
 	 */
 	public static function endpoint_parts() {
 		$settings = self::get();
@@ -376,9 +378,9 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Product attribute taxonomies for the select (label => taxonomy).
+	 * Атрибуты-таксономии товаров для селекта (метка => таксономия).
 	 *
-	 * @return array<string,string> taxonomy => label
+	 * @return array<string,string> таксономия => метка
 	 */
 	public static function get_attribute_choices() {
 		$choices = array();
@@ -398,7 +400,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Field: stock quantity threshold for API selection.
+	 * Поле: порог складского остатка для отбора в API.
 	 */
 	public static function field_stock_threshold() {
 		$settings = self::get();
@@ -410,7 +412,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Field: per_page default.
+	 * Поле: значение per_page по умолчанию.
 	 */
 	public static function field_per_page_default() {
 		$settings = self::get();
@@ -424,7 +426,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Field: endpoint path / URL.
+	 * Поле: путь или URL эндпоинта.
 	 */
 	public static function field_endpoint_path() {
 		$settings = self::get();
@@ -441,7 +443,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Field: attribute taxonomy (select by label).
+	 * Поле: атрибут-таксономия (выбор по метке).
 	 */
 	public static function field_publisher_taxonomy() {
 		$settings = self::get();
@@ -467,7 +469,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Field: attribute term (select by label, AJAX search).
+	 * Поле: значение атрибута (выбор по метке, поиск через AJAX).
 	 */
 	public static function field_publisher_term() {
 		$settings = self::get();
@@ -501,7 +503,7 @@ class MKS_Core_Settings {
 	}
 
 	/**
-	 * Renders settings page.
+	 * Выводит страницу настроек.
 	 */
 	public static function render_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {

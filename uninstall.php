@@ -1,9 +1,9 @@
 <?php
 /**
- * Uninstall MKS Core.
+ * Удаление плагина MKS Core.
  *
- * Removes the partner role, admin capability and settings when the plugin is deleted
- * (not on deactivate).
+ * Удаляет роль партнёра, право администратора и настройки при удалении плагина
+ * (не при деактивации).
  *
  * @package mks-core
  */

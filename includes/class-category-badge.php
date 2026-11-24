@@ -1,6 +1,6 @@
 <?php
 /**
- * Category image badge settings.
+ * Настройки бейджей категорий.
  *
  * @package mks-core
  */
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Stores the category badge rules and renders its settings page.
+ * Хранит правила бейджей категорий и выводит страницу их настроек.
  */
 class MKS_Core_Category_Badge {
 
@@ -18,7 +18,7 @@ class MKS_Core_Category_Badge {
 	const PAGE   = 'mks-category-badge';
 
 	/**
-	 * Default option values.
+	 * Значения настроек по умолчанию.
 	 *
 	 * @return array
 	 */
@@ -30,7 +30,7 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Default values of a single badge.
+	 * Значения по умолчанию одного бейджа.
 	 *
 	 * @return array
 	 */
@@ -44,6 +44,8 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
+	 * Текущие настройки, приведённые к актуальному виду.
+	 *
 	 * @return array
 	 */
 	public static function get() {
@@ -83,7 +85,7 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Writes defaults once (activation).
+	 * Записывает значения по умолчанию один раз (при активации).
 	 */
 	public static function activate() {
 		if ( false === get_option( self::OPTION ) ) {
@@ -92,7 +94,7 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Hooks.
+	 * Хуки.
 	 */
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'add_menu' ) );
@@ -103,7 +105,7 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Adds page under WooCommerce.
+	 * Добавляет страницу в раздел WooCommerce.
 	 */
 	public static function add_menu() {
 		add_submenu_page(
@@ -117,7 +119,7 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * @param string $hook Current admin page hook.
+	 * @param string $hook Текущий хук админ-страницы.
 	 */
 	public static function enqueue_assets( $hook ) {
 		if ( 'woocommerce_page_' . self::PAGE !== $hook ) {
@@ -136,7 +138,7 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Frontend styles.
+	 * Стили для лицевой части сайта.
 	 */
 	public static function enqueue_frontend_assets() {
 		wp_enqueue_style(
@@ -148,9 +150,9 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Renders the badge inside a product image container.
+	 * Выводит бейдж внутри контейнера изображения товара.
 	 *
-	 * @param int $product_id Product ID.
+	 * @param int $product_id ID товара.
 	 */
 	public static function render( $product_id ) {
 		$settings = self::get();
@@ -189,7 +191,7 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Registers setting and fields.
+	 * Регистрирует настройку и поля.
 	 */
 	public static function register() {
 		register_setting(
@@ -227,14 +229,14 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Section description.
+	 * Описание секции.
 	 */
 	public static function section_intro() {
 		echo '<p>Бейдж выводится на всех товарах выбранных категорий. Каждый бейдж задаётся отдельно: свой набор категорий, картинка, текст и цвет текста.</p>';
 	}
 
 	/**
-	 * @param array $input Raw input.
+	 * @param array $input Необработанный ввод.
 	 * @return array
 	 */
 	public static function sanitize( $input ) {
@@ -285,7 +287,7 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Field: enabled.
+	 * Поле: включение бейджей.
 	 */
 	public static function field_enabled() {
 		$settings = self::get();
@@ -297,7 +299,7 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Field: badge sets (repeatable).
+	 * Поле: наборы бейджей (с возможностью добавления).
 	 */
 	public static function field_badges() {
 		$settings = self::get();
@@ -338,11 +340,11 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Renders one badge set.
+	 * Выводит один набор бейджа.
 	 *
-	 * @param array      $children Terms grouped by parent ID.
-	 * @param int|string $index    Badge index or template placeholder.
-	 * @param array      $badge    Badge values.
+	 * @param array      $children Термины, сгруппированные по ID родителя.
+	 * @param int|string $index    Индекс бейджа или плейсхолдер шаблона.
+	 * @param array      $badge    Значения бейджа.
 	 */
 	private static function render_badge_set( $children, $index, $badge ) {
 		$name_base     = self::OPTION . '[badges][' . $index . ']';
@@ -381,12 +383,12 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Renders nested category checkboxes.
+	 * Выводит вложенные чекбоксы категорий.
 	 *
-	 * @param array  $children Terms grouped by parent ID.
-	 * @param int    $parent   Parent term ID.
-	 * @param array  $selected Selected term IDs.
-	 * @param string $name     Checkbox name attribute.
+	 * @param array  $children Термины, сгруппированные по ID родителя.
+	 * @param int    $parent   ID родительского термина.
+	 * @param array  $selected ID выбранных терминов.
+	 * @param string $name     Атрибут name для чекбокса.
 	 */
 	private static function render_term_checkboxes( $children, $parent, $selected, $name ) {
 		if ( empty( $children[ $parent ] ) ) {
@@ -413,7 +415,7 @@ class MKS_Core_Category_Badge {
 	}
 
 	/**
-	 * Renders settings page.
+	 * Выводит страницу настроек.
 	 */
 	public static function render_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {

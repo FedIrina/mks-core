@@ -1,6 +1,6 @@
 <?php
 /**
- * REST endpoint: product stock (read-only).
+ * REST-эндпоинт: остатки товаров (только чтение).
  *
  * @package mks-core
  */
@@ -10,15 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registers GET stock route and returns stock rows.
+ * Регистрирует GET-маршрут остатков и возвращает строки остатков.
  */
 class MKS_Core_REST_Stock {
 
-	/** Max items per page. */
+	/** Максимум записей на страницу. */
 	const MAX_PER_PAGE = 100;
 
 	/**
-	 * Hooks into rest_api_init and WC key auth for our namespace.
+	 * Подключается к rest_api_init и к авторизации ключами WC для своего пространства имён.
 	 */
 	public static function init() {
 		add_action( 'rest_api_init', array( __CLASS__, 'register_routes' ) );
@@ -26,9 +26,9 @@ class MKS_Core_REST_Stock {
 	}
 
 	/**
-	 * Let WooCommerce authenticate consumer keys on our configured route.
+	 * Позволяет WooCommerce аутентифицировать ключи клиентов на настроенном маршруте.
 	 *
-	 * @param bool $is Whether the request is treated as a WC REST request.
+	 * @param bool $is Считается ли запрос запросом WC REST.
 	 * @return bool
 	 */
 	public static function allow_wc_auth_for_namespace( $is ) {
@@ -54,7 +54,7 @@ class MKS_Core_REST_Stock {
 	}
 
 	/**
-	 * Registers the read-only route from settings.
+	 * Регистрирует маршрут только для чтения по настройкам.
 	 */
 	public static function register_routes() {
 		$settings = MKS_Core_Settings::get();
@@ -69,7 +69,7 @@ class MKS_Core_REST_Stock {
 				'permission_callback' => array( __CLASS__, 'permissions_check' ),
 				'args'                => array(
 					'page'     => array(
-						'description'       => 'Page number.',
+						'description'       => 'Номер страницы.',
 						'type'              => 'integer',
 						'default'           => 1,
 						'minimum'           => 1,
@@ -77,7 +77,7 @@ class MKS_Core_REST_Stock {
 						'sanitize_callback' => 'rest_sanitize_request_arg',
 					),
 					'per_page' => array(
-						'description'       => 'Items per page.',
+						'description'       => 'Записей на страницу.',
 						'type'              => 'integer',
 						'default'           => (int) $settings['per_page_default'],
 						'minimum'           => 1,
@@ -114,7 +114,7 @@ class MKS_Core_REST_Stock {
 	}
 
 	/**
-	 * @param WP_REST_Request $request Request.
+	 * @param WP_REST_Request $request Запрос.
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public static function get_items( $request ) {
@@ -183,8 +183,8 @@ class MKS_Core_REST_Stock {
 	}
 
 	/**
-	 * @param WC_Product $product   Product.
-	 * @param int        $threshold Stock threshold from settings.
+	 * @param WC_Product $product   Товар.
+	 * @param int        $threshold Порог остатка из настроек.
 	 * @return array
 	 */
 	private static function serialize_product( $product, $threshold ) {

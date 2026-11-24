@@ -1,6 +1,6 @@
 <?php
 /**
- * Header banner fields.
+ * Поля баннеров в шапке.
  *
  * @package mks-core
  */
@@ -10,15 +10,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registers the header banner field group in code.
+ * Регистрирует группу полей баннеров в шапке кодом.
  *
- * Field keys are kept identical to the group previously created in the admin,
- * so existing meta values stay linked to their field definitions.
+ * Ключи полей совпадают с группой, ранее созданной в админке,
+ * чтобы существующие значения метаданных остались привязаны к своим полям.
  */
 class MKS_Core_Banner_Fields {
 
 	/**
-	 * Hooks.
+	 * Хуки.
 	 */
 	public static function init() {
 		add_action( 'acf/init', array( __CLASS__, 'register' ) );
@@ -26,7 +26,7 @@ class MKS_Core_Banner_Fields {
 	}
 
 	/**
-	 * Declares the field group.
+	 * Объявляет группу полей.
 	 */
 	public static function register() {
 		acf_add_local_field_group(
@@ -129,12 +129,12 @@ class MKS_Core_Banner_Fields {
 	}
 
 	/**
-	 * Checks whether the banner should be displayed in the header.
+	 * Проверяет, нужно ли показывать баннер в шапке.
 	 *
-	 * A countdown banner outside its window falls back to the regular banner
-	 * if its image or caption was saved earlier.
+	 * Баннер с таймером вне своего окна уступает место обычному баннеру,
+	 * если его изображение или подпись были сохранены ранее.
 	 *
-	 * @param int $post_id Banner ID.
+	 * @param int $post_id ID баннера.
 	 * @return bool
 	 */
 	public static function is_visible( $post_id ) {
@@ -146,9 +146,9 @@ class MKS_Core_Banner_Fields {
 	}
 
 	/**
-	 * Checks whether the countdown is inside its show window.
+	 * Проверяет, находится ли таймер внутри окна показа.
 	 *
-	 * @param int $post_id Banner ID.
+	 * @param int $post_id ID баннера.
 	 * @return bool
 	 */
 	public static function is_countdown_active( $post_id ) {
@@ -167,10 +167,10 @@ class MKS_Core_Banner_Fields {
 	}
 
 	/**
-	 * Gets the timestamp of a date field in the site timezone.
+	 * Возвращает метку времени поля с датой в часовом поясе сайта.
 	 *
-	 * @param string $name    Field name.
-	 * @param int    $post_id Banner ID.
+	 * @param string $name    Имя поля.
+	 * @param int    $post_id ID баннера.
 	 * @return int|false
 	 */
 	private static function field_timestamp( $name, $post_id ) {
@@ -186,9 +186,9 @@ class MKS_Core_Banner_Fields {
 	}
 
 	/**
-	 * Checks whether the banner has content to show as a regular banner.
+	 * Проверяет, есть ли у баннера содержимое для показа обычным баннером.
 	 *
-	 * @param int $post_id Banner ID.
+	 * @param int $post_id ID баннера.
 	 * @return bool
 	 */
 	private static function has_banner_content( $post_id ) {
@@ -196,12 +196,12 @@ class MKS_Core_Banner_Fields {
 	}
 
 	/**
-	 * Limits the countdown end date to 99 days ahead.
+	 * Ограничивает дату окончания таймера 99 днями вперёд.
 	 *
-	 * @param bool|string $valid Validation status.
-	 * @param mixed       $value Submitted value.
-	 * @param array       $field Field array.
-	 * @param string      $input Input name.
+	 * @param bool|string $valid Статус валидации.
+	 * @param mixed       $value Отправленное значение.
+	 * @param array       $field Массив поля.
+	 * @param string      $input Имя поля ввода.
 	 * @return bool|string
 	 */
 	public static function validate_until( $valid, $value, $field, $input ) {
