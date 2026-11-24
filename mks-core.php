@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       MKS Core
  * Description:       Общий функционал интернет-магазина (REST API остатков и др.).
- * Version:           0.5.1
+ * Version:           0.6.1
  * Requires at least: 5.9
  * Requires PHP:      7.4
  * Requires Plugins:  woocommerce
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'MKS_CORE_VERSION', '0.5.1' );
+define( 'MKS_CORE_VERSION', '0.6.1' );
 define( 'MKS_CORE_FILE', __FILE__ );
 define( 'MKS_CORE_DIR', dirname( __FILE__ ) );
 
@@ -25,9 +25,11 @@ require_once MKS_CORE_DIR . '/includes/class-settings.php';
 require_once MKS_CORE_DIR . '/includes/class-rest-stock.php';
 require_once MKS_CORE_DIR . '/includes/class-category-badge.php';
 require_once MKS_CORE_DIR . '/includes/class-banner-fields.php';
+require_once MKS_CORE_DIR . '/includes/class-countdown.php';
 
 // Header banners are independent of WooCommerce, so this runs unconditionally.
 MKS_Core_Banner_Fields::init();
+MKS_Core_Countdown::init();
 
 register_activation_hook( __FILE__, 'mks_core_activate' );
 register_deactivation_hook( __FILE__, array( 'MKS_Core_Roles', 'deactivate' ) );

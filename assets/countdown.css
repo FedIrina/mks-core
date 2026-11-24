@@ -1,0 +1,121 @@
+.mks-countdown {
+  box-sizing: border-box;
+  display: grid;
+  align-content: space-between;
+  gap: 20px;
+  padding: 30px;
+  -moz-border-radius: 12px;
+  -webkit-border-radius: 12px;
+  border-radius: 12px;
+  background: #FFD43A;
+}
+
+.mks-countdown__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #141414;
+}
+
+.mks-countdown__units {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-gap: 20px;
+}
+
+.mks-countdown__unit {
+  display: grid;
+  grid-gap: 6px;
+  justify-items: center;
+}
+
+.mks-countdown__value {
+  position: relative;
+  display: grid;
+  place-content: center;
+  width: 100%;
+  min-height: 61px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  background: #141414;
+  color: #FFD43A;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.mks-countdown__unit:not(:last-child) .mks-countdown__value::after {
+  content: ':';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-left: 10px;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  color: #141414;
+}
+
+.mks-countdown__label {
+  font-size: 14px;
+  line-height: 1;
+  color: #141414;
+}
+
+.header-piece > .mks-countdown:first-child {
+  padding-bottom: 20px;
+}
+
+@media screen and (max-width: 767px) {
+  .mks-countdown__units {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-gap: 12px;
+  }
+
+  .mks-countdown__unit:nth-child(2n) .mks-countdown__value::after {
+    display: none;
+  }
+
+  .mks-countdown__unit:not(:last-child) .mks-countdown__value::after {
+    margin-left: 6px;
+    font-size: 26px;
+  }
+
+  .mks-countdown__value {
+    min-height: 48px;
+    font-size: 26px;
+  }
+
+  .mks-countdown__label {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .mks-countdown__units {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .mks-countdown__unit:nth-child(2n) .mks-countdown__value::after {
+    display: block;
+  }
+
+  .mks-countdown__unit:not(:last-child) .mks-countdown__value::after {
+    margin-left: 10px;
+    font-size: 24px;
+  }
+
+  .mks-countdown__value {
+    min-height: 44px;
+    font-size: 24px;
+  }
+
+  .mks-countdown__label {
+    font-size: 11px;
+  }
+}
