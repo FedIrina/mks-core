@@ -69,7 +69,7 @@ class MKS_Core_REST_Stock {
 				'permission_callback' => array( __CLASS__, 'permissions_check' ),
 				'args'                => array(
 					'page'     => array(
-						'description'       => 'Номер страницы.',
+						'description'       => __( 'Номер страницы.', 'mks-core' ),
 						'type'              => 'integer',
 						'default'           => 1,
 						'minimum'           => 1,
@@ -77,7 +77,7 @@ class MKS_Core_REST_Stock {
 						'sanitize_callback' => 'rest_sanitize_request_arg',
 					),
 					'per_page' => array(
-						'description'       => 'Записей на страницу.',
+						'description'       => __( 'Записей на страницу.', 'mks-core' ),
 						'type'              => 'integer',
 						'default'           => (int) $settings['per_page_default'],
 						'minimum'           => 1,
@@ -192,7 +192,8 @@ class MKS_Core_REST_Stock {
 			'name'           => $product->get_name(),
 			'sku'            => $product->get_sku(),
 			'isbn'           => $product->get_attribute( 'isbn' ),
-			'stock_quantity' => 'более ' . (int) $threshold,
+			/* translators: %d: значение порога остатка. */
+			'stock_quantity' => sprintf( __( 'более %d', 'mks-core' ), (int) $threshold ),
 		);
 	}
 }

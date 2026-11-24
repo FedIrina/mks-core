@@ -31,8 +31,17 @@ require_once MKS_CORE_DIR . '/includes/class-countdown.php';
 MKS_Core_Banner_Fields::init();
 MKS_Core_Countdown::init();
 
+add_action( 'init', 'mks_core_load_textdomain' );
+
 register_activation_hook( __FILE__, 'mks_core_activate' );
 register_deactivation_hook( __FILE__, array( 'MKS_Core_Roles', 'deactivate' ) );
+
+/**
+ * Подключает файлы перевода из каталога languages.
+ */
+function mks_core_load_textdomain() {
+	load_plugin_textdomain( 'mks-core', false, dirname( plugin_basename( MKS_CORE_FILE ) ) . '/languages' );
+}
 
 /**
  * Активация плагина.

@@ -25,7 +25,7 @@
 				var $checkbox = $(this);
 				var $chip = $('<span class="mks-badge-chip"></span>').text($checkbox.parent('label').text().trim());
 
-				$('<button type="button" aria-label="Убрать">&times;</button>')
+				$('<button type="button" aria-label="' + mksCategoryBadge.removeLabel + '">&times;</button>')
 					.on('click', function () {
 						$checkbox.prop('checked', false).trigger('change');
 					})
@@ -76,8 +76,8 @@
 
 			if (!frame) {
 				frame = wp.media({
-					title: 'Выберите изображение бейджа',
-					button: { text: 'Использовать' },
+					title: mksCategoryBadge.mediaTitle,
+					button: { text: mksCategoryBadge.mediaButton },
 					multiple: false
 				});
 			}

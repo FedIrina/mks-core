@@ -110,8 +110,8 @@ class MKS_Core_Category_Badge {
 	public static function add_menu() {
 		add_submenu_page(
 			'woocommerce',
-			'Бейджи категорий',
-			'Бейджи категорий',
+			__( 'Бейджи категорий', 'mks-core' ),
+			__( 'Бейджи категорий', 'mks-core' ),
 			'manage_options',
 			self::PAGE,
 			array( __CLASS__, 'render_page' )
@@ -134,6 +134,16 @@ class MKS_Core_Category_Badge {
 			array( 'jquery', 'wp-color-picker' ),
 			MKS_CORE_VERSION,
 			true
+		);
+
+		wp_localize_script(
+			'mks-core-category-badge',
+			'mksCategoryBadge',
+			array(
+				'removeLabel' => __( 'Убрать', 'mks-core' ),
+				'mediaTitle'  => __( 'Выберите изображение бейджа', 'mks-core' ),
+				'mediaButton' => __( 'Использовать', 'mks-core' ),
+			)
 		);
 	}
 
@@ -206,14 +216,14 @@ class MKS_Core_Category_Badge {
 
 		add_settings_section(
 			'mks_core_category_badge',
-			'Бейджи для категорий',
+			__( 'Бейджи для категорий', 'mks-core' ),
 			array( __CLASS__, 'section_intro' ),
 			self::PAGE
 		);
 
 		add_settings_field(
 			'enabled',
-			'Показывать бейджи',
+			__( 'Показывать бейджи', 'mks-core' ),
 			array( __CLASS__, 'field_enabled' ),
 			self::PAGE,
 			'mks_core_category_badge'
@@ -221,7 +231,7 @@ class MKS_Core_Category_Badge {
 
 		add_settings_field(
 			'badges',
-			'Бейджи',
+			__( 'Бейджи', 'mks-core' ),
 			array( __CLASS__, 'field_badges' ),
 			self::PAGE,
 			'mks_core_category_badge'
@@ -232,7 +242,7 @@ class MKS_Core_Category_Badge {
 	 * Описание секции.
 	 */
 	public static function section_intro() {
-		echo '<p>Бейдж выводится на всех товарах выбранных категорий. Каждый бейдж задаётся отдельно: свой набор категорий, картинка, текст и цвет текста.</p>';
+		echo '<p>' . esc_html__( 'Бейдж выводится на всех товарах выбранных категорий. Каждый бейдж задаётся отдельно: свой набор категорий, картинка, текст и цвет текста.', 'mks-core' ) . '</p>';
 	}
 
 	/**
@@ -292,9 +302,10 @@ class MKS_Core_Category_Badge {
 	public static function field_enabled() {
 		$settings = self::get();
 		printf(
-			'<label><input type="checkbox" name="%1$s[enabled]" value="1"%2$s /> Показывать бейджи на товарах выбранных категорий</label>',
+			'<label><input type="checkbox" name="%1$s[enabled]" value="1"%2$s /> %3$s</label>',
 			esc_attr( self::OPTION ),
-			checked( $settings['enabled'], 1, false )
+			checked( $settings['enabled'], 1, false ),
+			esc_html__( 'Показывать бейджи на товарах выбранных категорий', 'mks-core' )
 		);
 	}
 
@@ -333,7 +344,7 @@ class MKS_Core_Category_Badge {
 			self::render_badge_set( $children, $index, $badge );
 		}
 		echo '</div>';
-		echo '<p><button type="button" class="button" id="mks-badge-add">Добавить бейдж</button></p>';
+		echo '<p><button type="button" class="button" id="mks-badge-add">' . esc_html__( 'Добавить бейдж', 'mks-core' ) . '</button></p>';
 		echo '<template id="mks-badge-set-template">';
 		self::render_badge_set( $children, '__index__', self::default_badge() );
 		echo '</template>';
@@ -354,28 +365,28 @@ class MKS_Core_Category_Badge {
 		?>
 		<div class="mks-badge-set">
 			<div class="mks-badge-set-head">
-				<strong>Бейдж <span class="mks-badge-set-number"><?php echo is_int( $index ) ? (int) $index + 1 : ''; ?></span></strong>
-				<button type="button" class="button-link button-link-delete mks-badge-set-remove">Удалить бейдж</button>
+				<strong><?php esc_html_e( 'Бейдж', 'mks-core' ); ?> <span class="mks-badge-set-number"><?php echo is_int( $index ) ? (int) $index + 1 : ''; ?></span></strong>
+				<button type="button" class="button-link button-link-delete mks-badge-set-remove"><?php esc_html_e( 'Удалить бейдж', 'mks-core' ); ?></button>
 			</div>
-			<p><strong>Товарные категории</strong></p>
+			<p><strong><?php esc_html_e( 'Товарные категории', 'mks-core' ); ?></strong></p>
 			<div class="mks-badge-selected"></div>
-			<p><input type="search" class="mks-badge-cats-search regular-text" placeholder="Поиск категории…" /></p>
+			<p><input type="search" class="mks-badge-cats-search regular-text" placeholder="<?php esc_attr_e( 'Поиск категории…', 'mks-core' ); ?>" /></p>
 			<div class="mks-badge-cats-scroll">
 				<ul class="mks-badge-cats">
 					<?php self::render_term_checkboxes( $children, 0, $selected, $name_base . '[term_ids][]' ); ?>
 				</ul>
 			</div>
-			<p><strong>Изображение</strong></p>
+			<p><strong><?php esc_html_e( 'Изображение', 'mks-core' ); ?></strong></p>
 			<input type="hidden" class="mks-badge-attachment" name="<?php echo esc_attr( $name_base . '[attachment_id]' ); ?>" value="<?php echo esc_attr( $attachment_id ); ?>" />
 			<img class="mks-badge-preview" src="<?php echo esc_url( $image_url ); ?>" alt="" style="max-width:200px;height:auto;display:<?php echo $image_url ? 'block' : 'none'; ?>;margin-bottom:10px;" />
 			<p>
-				<button type="button" class="button mks-badge-pick">Выбрать изображение</button>
-				<button type="button" class="button-link button-link-delete mks-badge-remove" style="display:<?php echo $attachment_id ? 'inline' : 'none'; ?>;">Удалить</button>
+				<button type="button" class="button mks-badge-pick"><?php esc_html_e( 'Выбрать изображение', 'mks-core' ); ?></button>
+				<button type="button" class="button-link button-link-delete mks-badge-remove" style="display:<?php echo $attachment_id ? 'inline' : 'none'; ?>;"><?php esc_html_e( 'Удалить', 'mks-core' ); ?></button>
 			</p>
-			<p><strong>Текст на бейдже</strong><br />
+			<p><strong><?php esc_html_e( 'Текст на бейдже', 'mks-core' ); ?></strong><br />
 				<input type="text" class="regular-text" name="<?php echo esc_attr( $name_base . '[text]' ); ?>" value="<?php echo esc_attr( $badge['text'] ); ?>" />
 			</p>
-			<p><strong>Цвет текста</strong><br />
+			<p><strong><?php esc_html_e( 'Цвет текста', 'mks-core' ); ?></strong><br />
 				<input type="text" class="mks-core-color-picker" name="<?php echo esc_attr( $name_base . '[text_color]' ); ?>" value="<?php echo esc_attr( $badge['text_color'] ); ?>" data-default-color="<?php echo esc_attr( self::default_badge()['text_color'] ); ?>" />
 			</p>
 		</div>

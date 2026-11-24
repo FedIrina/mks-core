@@ -116,10 +116,10 @@ class MKS_Core_Settings {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'mks_core_settings' ),
 				'i18n'    => array(
-					'search'       => 'Поиск…',
-					'noResults'    => 'Ничего не найдено',
-					'placeholder'  => 'Выберите…',
-					'loadingTerms' => 'Загрузка значений…',
+					'search'       => __( 'Поиск…', 'mks-core' ),
+					'noResults'    => __( 'Ничего не найдено', 'mks-core' ),
+					'placeholder'  => __( 'Выберите…', 'mks-core' ),
+					'loadingTerms' => __( 'Загрузка значений…', 'mks-core' ),
 				),
 			)
 		);
@@ -193,7 +193,7 @@ class MKS_Core_Settings {
 
 		add_settings_field(
 			'per_page_default',
-			'Записей на страницу по умолчанию',
+			__( 'Записей на страницу по умолчанию', 'mks-core' ),
 			array( __CLASS__, 'field_per_page_default' ),
 			self::PAGE,
 			'mks_core_rest_api'
@@ -201,7 +201,7 @@ class MKS_Core_Settings {
 
 		add_settings_field(
 			'endpoint_path',
-			'URL эндпоинта',
+			__( 'URL эндпоинта', 'mks-core' ),
 			array( __CLASS__, 'field_endpoint_path' ),
 			self::PAGE,
 			'mks_core_rest_api'
@@ -209,7 +209,7 @@ class MKS_Core_Settings {
 
 		add_settings_field(
 			'publisher_taxonomy',
-			'Атрибут',
+			__( 'Атрибут', 'mks-core' ),
 			array( __CLASS__, 'field_publisher_taxonomy' ),
 			self::PAGE,
 			'mks_core_rest_api'
@@ -217,7 +217,7 @@ class MKS_Core_Settings {
 
 		add_settings_field(
 			'publisher_term',
-			'Значение атрибута',
+			__( 'Значение атрибута', 'mks-core' ),
 			array( __CLASS__, 'field_publisher_term' ),
 			self::PAGE,
 			'mks_core_rest_api'
@@ -225,7 +225,7 @@ class MKS_Core_Settings {
 
 		add_settings_field(
 			'stock_threshold',
-			'Порог складского остатка',
+			__( 'Порог складского остатка', 'mks-core' ),
 			array( __CLASS__, 'field_stock_threshold' ),
 			self::PAGE,
 			'mks_core_rest_api'
@@ -249,7 +249,7 @@ class MKS_Core_Settings {
 	 * Описание секции.
 	 */
 	public static function section_rest_api() {
-		echo '<p>Параметры выдачи остатков по атрибуту товара.</p>';
+		echo '<p>' . esc_html__( 'Параметры выдачи остатков по атрибуту товара.', 'mks-core' ) . '</p>';
 	}
 
 	/**
@@ -405,9 +405,11 @@ class MKS_Core_Settings {
 	public static function field_stock_threshold() {
 		$settings = self::get();
 		printf(
-			'<input type="number" name="%1$s[stock_threshold]" value="%2$d" min="1" class="small-text" /> <span class="description">в выборку — остаток строго больше этого значения; в API вместо числа — «более %2$d»</span>',
+			'<input type="number" name="%1$s[stock_threshold]" value="%2$d" min="1" class="small-text" /> <span class="description">%3$s</span>',
 			esc_attr( self::OPTION ),
-			(int) $settings['stock_threshold']
+			(int) $settings['stock_threshold'],
+			/* translators: %d: значение порога остатка. */
+			esc_html( sprintf( __( 'в выборку — остаток строго больше этого значения; в API вместо числа — «более %d»', 'mks-core' ), (int) $settings['stock_threshold'] ) )
 		);
 	}
 
@@ -418,10 +420,12 @@ class MKS_Core_Settings {
 		$settings = self::get();
 		$max      = MKS_Core_REST_Stock::MAX_PER_PAGE;
 		printf(
-			'<input type="number" name="%1$s[per_page_default]" value="%2$d" min="1" max="%3$d" class="small-text" /> <span class="description">от 1 до %3$d</span>',
+			'<input type="number" name="%1$s[per_page_default]" value="%2$d" min="1" max="%3$d" class="small-text" /> <span class="description">%4$s</span>',
 			esc_attr( self::OPTION ),
 			(int) $settings['per_page_default'],
-			(int) $max
+			(int) $max,
+			/* translators: %d: максимальное количество записей на страницу. */
+			esc_html( sprintf( __( 'от 1 до %d', 'mks-core' ), (int) $max ) )
 		);
 	}
 
@@ -435,9 +439,10 @@ class MKS_Core_Settings {
 			esc_attr( self::OPTION ),
 			esc_attr( $settings['endpoint_path'] )
 		);
-		echo '<p class="description">Путь после <code>/wp-json/</code> или полный URL. В БД хранится путь.</p>';
+		echo '<p class="description">' . wp_kses( __( 'Путь после <code>/wp-json/</code> или полный URL. В БД хранится путь.', 'mks-core' ), array( 'code' => array() ) ) . '</p>';
 		printf(
-			'<p class="description">Текущий URL: <code>%s</code></p>',
+			'<p class="description">%s <code>%s</code></p>',
+			esc_html__( 'Текущий URL:', 'mks-core' ),
 			esc_html( self::endpoint_url() )
 		);
 	}
@@ -465,7 +470,7 @@ class MKS_Core_Settings {
 			);
 		}
 		echo '</select>';
-		echo '<p class="description">Таксономический атрибут WooCommerce (в БД — имя таксономии).</p>';
+		echo '<p class="description">' . esc_html__( 'Таксономический атрибут WooCommerce (в БД — имя таксономии).', 'mks-core' ) . '</p>';
 	}
 
 	/**
@@ -499,7 +504,7 @@ class MKS_Core_Settings {
 		}
 
 		echo '</select>';
-		echo '<p class="description">Значение выбранного атрибута (в БД — слаг термина).</p>';
+		echo '<p class="description">' . esc_html__( 'Значение выбранного атрибута (в БД — слаг термина).', 'mks-core' ) . '</p>';
 	}
 
 	/**

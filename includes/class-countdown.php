@@ -14,8 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class MKS_Core_Countdown {
 
-	const DEFAULT_TITLE = 'До конца акции осталось';
-
 	/**
 	 * Хуки.
 	 */
@@ -95,23 +93,23 @@ class MKS_Core_Countdown {
 		$units = array(
 			'days'    => array(
 				'value' => intdiv( $remaining, DAY_IN_SECONDS ),
-				'label' => 'дней',
+				'label' => __( 'дней', 'mks-core' ),
 			),
 			'hours'   => array(
 				'value' => intdiv( $remaining % DAY_IN_SECONDS, HOUR_IN_SECONDS ),
-				'label' => 'часов',
+				'label' => __( 'часов', 'mks-core' ),
 			),
 			'minutes' => array(
 				'value' => intdiv( $remaining % HOUR_IN_SECONDS, MINUTE_IN_SECONDS ),
-				'label' => 'минут',
+				'label' => __( 'минут', 'mks-core' ),
 			),
 			'seconds' => array(
 				'value' => $remaining % MINUTE_IN_SECONDS,
-				'label' => 'секунд',
+				'label' => __( 'секунд', 'mks-core' ),
 			),
 		);
 
-		$title = '' !== $args['title'] ? $args['title'] : self::DEFAULT_TITLE;
+		$title = '' !== $args['title'] ? $args['title'] : __( 'До конца акции осталось', 'mks-core' );
 
 		$html  = '<div class="mks-countdown" data-until="' . esc_attr( $until->format( 'Y-m-d\TH:i:sP' ) ) . '">';
 		$html .= '<div class="mks-countdown__title">' . esc_html( $title ) . '</div>';

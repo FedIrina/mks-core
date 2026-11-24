@@ -23,7 +23,7 @@ class MKS_Core_Roles {
 	public static function activate() {
 		add_role(
 			self::ROLE,
-			'МКС API Partner',
+			__( 'МКС API Partner', 'mks-core' ),
 			array(
 				self::CAPABILITY => true,
 				'read'           => true,

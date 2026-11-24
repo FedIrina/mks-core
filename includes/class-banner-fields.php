@@ -32,22 +32,22 @@ class MKS_Core_Banner_Fields {
 		acf_add_local_field_group(
 			array(
 				'key'                   => 'group_64be48d1df9e0',
-				'title'                 => 'Баннеры в шапке',
+				'title'                 => __( 'Баннеры в шапке', 'mks-core' ),
 				'fields'                => array(
 					array(
 						'key'       => 'field_mks_banner_tab',
-						'label'     => 'Баннер',
+						'label'     => __( 'Баннер', 'mks-core' ),
 						'type'      => 'tab',
 						'placement' => 'top',
 					),
 					array(
 						'key'                => 'field_64be48d221877',
 						'name'               => 'banner_position',
-						'label'              => 'Позиция баннера на странице',
+						'label'              => __( 'Позиция баннера на странице', 'mks-core' ),
 						'type'               => 'radio',
 						'choices'            => array(
-							'up'   => 'вверху',
-							'down' => 'внизу',
+							'up'   => __( 'вверху', 'mks-core' ),
+							'down' => __( 'внизу', 'mks-core' ),
 						),
 						'default_value'      => 'up',
 						'return_format'      => 'value',
@@ -57,14 +57,14 @@ class MKS_Core_Banner_Fields {
 					array(
 						'key'           => 'field_683d9eece3690',
 						'name'          => 'banner_back_color',
-						'label'         => 'Цвет фона',
+						'label'         => __( 'Цвет фона', 'mks-core' ),
 						'type'          => 'color_picker',
 						'return_format' => 'string',
 					),
 					array(
 						'key'           => 'field_683da59422ae6',
 						'name'          => 'banner_back_image',
-						'label'         => 'Изображение фона',
+						'label'         => __( 'Изображение фона', 'mks-core' ),
 						'type'          => 'image',
 						'return_format' => 'url',
 						'preview_size'  => 'medium',
@@ -72,15 +72,15 @@ class MKS_Core_Banner_Fields {
 					),
 					array(
 						'key'       => 'field_mks_timer_tab',
-						'label'     => 'Таймер',
+						'label'     => __( 'Таймер', 'mks-core' ),
 						'type'      => 'tab',
 						'placement' => 'top',
 					),
 					array(
 						'key'            => 'field_mks_banner_show_from',
 						'name'           => 'banner_show_from',
-						'label'          => 'Дата и время начала акции',
-						'instructions'   => 'С этого момента вместо баннера показывается таймер. Пустое значение — таймер сразу.',
+						'label'          => __( 'Дата и время начала акции', 'mks-core' ),
+						'instructions'   => __( 'С этого момента вместо баннера показывается таймер. Пустое значение — таймер сразу.', 'mks-core' ),
 						'type'           => 'date_time_picker',
 						'display_format' => 'd.m.Y H:i',
 						'return_format'  => 'Y-m-d H:i:s',
@@ -92,8 +92,8 @@ class MKS_Core_Banner_Fields {
 					array(
 						'key'            => 'field_mks_countdown_until',
 						'name'           => 'countdown_until',
-						'label'          => 'Дата и время окончания акции',
-						'instructions'   => 'Заполненное значение включает таймер. После окончания снова показывается баннер.',
+						'label'          => __( 'Дата и время окончания акции', 'mks-core' ),
+						'instructions'   => __( 'Заполненное значение включает таймер. После окончания снова показывается баннер.', 'mks-core' ),
 						'type'           => 'date_time_picker',
 						'display_format' => 'd.m.Y H:i',
 						'return_format'  => 'Y-m-d H:i:s',
@@ -105,9 +105,9 @@ class MKS_Core_Banner_Fields {
 					array(
 						'key'           => 'field_mks_countdown_title',
 						'name'          => 'countdown_title',
-						'label'         => 'Заголовок таймера',
+						'label'         => __( 'Заголовок таймера', 'mks-core' ),
 						'type'          => 'text',
-						'default_value' => 'До конца акции осталось',
+						'default_value' => __( 'До конца акции осталось', 'mks-core' ),
 					),
 				),
 				'location'              => array(
@@ -212,11 +212,11 @@ class MKS_Core_Banner_Fields {
 		$until = DateTime::createFromFormat( 'Y-m-d H:i:s', $value, wp_timezone() );
 
 		if ( ! $until ) {
-			return 'Укажите корректную дату окончания.';
+			return __( 'Укажите корректную дату окончания.', 'mks-core' );
 		}
 
 		if ( $until->getTimestamp() > time() + 99 * DAY_IN_SECONDS ) {
-			return 'Дата не может быть дальше 99 дней от текущего момента.';
+			return __( 'Дата не может быть дальше 99 дней от текущего момента.', 'mks-core' );
 		}
 
 		return $valid;

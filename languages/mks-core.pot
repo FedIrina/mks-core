@@ -1,0 +1,285 @@
+# Copyright (C) 2026 MKS
+# This file is distributed under the same license as the MKS Core plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: MKS Core 0.6.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mks-core\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-11-24T19:23:47+03:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.8.1\n"
+"X-Domain: mks-core\n"
+
+#. Plugin Name of the plugin
+msgid "MKS Core"
+msgstr ""
+
+#. Description of the plugin
+msgid "Общий функционал интернет-магазина (REST API остатков и др.)."
+msgstr ""
+
+#. Author of the plugin
+msgid "MKS"
+msgstr ""
+
+#: includes/class-banner-fields.php:35
+msgid "Баннеры в шапке"
+msgstr ""
+
+#: includes/class-banner-fields.php:39
+msgid "Баннер"
+msgstr ""
+
+#: includes/class-banner-fields.php:46
+msgid "Позиция баннера на странице"
+msgstr ""
+
+#: includes/class-banner-fields.php:49
+msgid "вверху"
+msgstr ""
+
+#: includes/class-banner-fields.php:50
+msgid "внизу"
+msgstr ""
+
+#: includes/class-banner-fields.php:60
+msgid "Цвет фона"
+msgstr ""
+
+#: includes/class-banner-fields.php:67
+msgid "Изображение фона"
+msgstr ""
+
+#: includes/class-banner-fields.php:75
+msgid "Таймер"
+msgstr ""
+
+#: includes/class-banner-fields.php:82
+msgid "Дата и время начала акции"
+msgstr ""
+
+#: includes/class-banner-fields.php:83
+msgid "С этого момента вместо баннера показывается таймер. Пустое значение — таймер сразу."
+msgstr ""
+
+#: includes/class-banner-fields.php:95
+msgid "Дата и время окончания акции"
+msgstr ""
+
+#: includes/class-banner-fields.php:96
+msgid "Заполненное значение включает таймер. После окончания снова показывается баннер."
+msgstr ""
+
+#: includes/class-banner-fields.php:108
+msgid "Заголовок таймера"
+msgstr ""
+
+#: includes/class-banner-fields.php:110
+#: includes/class-countdown.php:112
+msgid "До конца акции осталось"
+msgstr ""
+
+#: includes/class-banner-fields.php:215
+msgid "Укажите корректную дату окончания."
+msgstr ""
+
+#: includes/class-banner-fields.php:219
+msgid "Дата не может быть дальше 99 дней от текущего момента."
+msgstr ""
+
+#: includes/class-category-badge.php:113
+#: includes/class-category-badge.php:114
+msgid "Бейджи категорий"
+msgstr ""
+
+#: includes/class-category-badge.php:143
+msgid "Убрать"
+msgstr ""
+
+#: includes/class-category-badge.php:144
+msgid "Выберите изображение бейджа"
+msgstr ""
+
+#: includes/class-category-badge.php:145
+msgid "Использовать"
+msgstr ""
+
+#: includes/class-category-badge.php:219
+msgid "Бейджи для категорий"
+msgstr ""
+
+#: includes/class-category-badge.php:226
+msgid "Показывать бейджи"
+msgstr ""
+
+#: includes/class-category-badge.php:234
+msgid "Бейджи"
+msgstr ""
+
+#: includes/class-category-badge.php:245
+msgid "Бейдж выводится на всех товарах выбранных категорий. Каждый бейдж задаётся отдельно: свой набор категорий, картинка, текст и цвет текста."
+msgstr ""
+
+#: includes/class-category-badge.php:308
+msgid "Показывать бейджи на товарах выбранных категорий"
+msgstr ""
+
+#: includes/class-category-badge.php:347
+msgid "Добавить бейдж"
+msgstr ""
+
+#: includes/class-category-badge.php:368
+msgid "Бейдж"
+msgstr ""
+
+#: includes/class-category-badge.php:369
+msgid "Удалить бейдж"
+msgstr ""
+
+#: includes/class-category-badge.php:371
+msgid "Товарные категории"
+msgstr ""
+
+#: includes/class-category-badge.php:373
+msgid "Поиск категории…"
+msgstr ""
+
+#: includes/class-category-badge.php:379
+msgid "Изображение"
+msgstr ""
+
+#: includes/class-category-badge.php:383
+msgid "Выбрать изображение"
+msgstr ""
+
+#: includes/class-category-badge.php:384
+msgid "Удалить"
+msgstr ""
+
+#: includes/class-category-badge.php:386
+msgid "Текст на бейдже"
+msgstr ""
+
+#: includes/class-category-badge.php:389
+msgid "Цвет текста"
+msgstr ""
+
+#: includes/class-countdown.php:96
+msgid "дней"
+msgstr ""
+
+#: includes/class-countdown.php:100
+msgid "часов"
+msgstr ""
+
+#: includes/class-countdown.php:104
+msgid "минут"
+msgstr ""
+
+#: includes/class-countdown.php:108
+msgid "секунд"
+msgstr ""
+
+#: includes/class-rest-stock.php:72
+msgid "Номер страницы."
+msgstr ""
+
+#: includes/class-rest-stock.php:80
+msgid "Записей на страницу."
+msgstr ""
+
+#: includes/class-rest-stock.php:100
+msgid "API keys in query parameters are not allowed. Use HTTP Basic Authentication."
+msgstr ""
+
+#: includes/class-rest-stock.php:111
+msgid "Sorry, you are not allowed to do that."
+msgstr ""
+
+#: includes/class-rest-stock.php:128
+msgid "Attribute filter is not configured."
+msgstr ""
+
+#. translators: %d: значение порога остатка.
+#: includes/class-rest-stock.php:196
+msgid "более %d"
+msgstr ""
+
+#: includes/class-roles.php:26
+msgid "МКС API Partner"
+msgstr ""
+
+#: includes/class-settings.php:119
+msgid "Поиск…"
+msgstr ""
+
+#: includes/class-settings.php:120
+msgid "Ничего не найдено"
+msgstr ""
+
+#: includes/class-settings.php:121
+#: includes/class-settings.php:462
+msgid "Выберите…"
+msgstr ""
+
+#: includes/class-settings.php:122
+msgid "Загрузка значений…"
+msgstr ""
+
+#: includes/class-settings.php:196
+msgid "Записей на страницу по умолчанию"
+msgstr ""
+
+#: includes/class-settings.php:204
+msgid "URL эндпоинта"
+msgstr ""
+
+#: includes/class-settings.php:212
+msgid "Атрибут"
+msgstr ""
+
+#: includes/class-settings.php:220
+msgid "Значение атрибута"
+msgstr ""
+
+#: includes/class-settings.php:228
+msgid "Порог складского остатка"
+msgstr ""
+
+#: includes/class-settings.php:252
+msgid "Параметры выдачи остатков по атрибуту товара."
+msgstr ""
+
+#. translators: %d: значение порога остатка.
+#: includes/class-settings.php:412
+msgid "в выборку — остаток строго больше этого значения; в API вместо числа — «более %d»"
+msgstr ""
+
+#. translators: %d: максимальное количество записей на страницу.
+#: includes/class-settings.php:428
+msgid "от 1 до %d"
+msgstr ""
+
+#: includes/class-settings.php:442
+msgid "Путь после <code>/wp-json/</code> или полный URL. В БД хранится путь."
+msgstr ""
+
+#: includes/class-settings.php:445
+msgid "Текущий URL:"
+msgstr ""
+
+#: includes/class-settings.php:473
+msgid "Таксономический атрибут WooCommerce (в БД — имя таксономии)."
+msgstr ""
+
+#: includes/class-settings.php:507
+msgid "Значение выбранного атрибута (в БД — слаг термина)."
+msgstr ""
+
+#: mks-core.php:83
+msgid "MKS Core требует активный плагин WooCommerce."
+msgstr ""
